@@ -1,0 +1,22 @@
+.{ .name = .KeyDom, .version = "0.0.1", .fingerprint = 0x354d03b678ccd3c6, .minimum_zig_version = "0.14.0", .dependencies = .{
+    .pg = .{
+        .url = "git+https://github.com/karlseguin/pg.zig?ref=master#f5d46c0721db63bc42354f1dcda03d63bdabdac6",
+        .hash = "pg-0.0.0-Wp_7gS8DBgAMo_tz7-KNu5OxmKZn1tCeVWNeipSANF64",
+    },
+    .tokamak = .{
+        .url = "git+https://github.com/cztomsik/tokamak?ref=main#0e89945904f19d0331cd19bca5072a4e421b0dc9",
+        .hash = "tokamak-2.0.0-FbnSefY2BACZnQ9VL5WDJbds6mKoBZQpZtNvLcCK_TLc",
+    },
+    .@"zig-jwt" = .{
+        .url = "git+https://github.com/deatil/zig-jwt?ref=main#9447097fef3cc6a647e579bb46f645f5652cdf2e",
+        .hash = "zig_jwt-1.2.11-w3q9SNA3BABOmYiyG8uxy12nLAEY5gJMZqQXi8fyPz_L",
+    },
+    .nexlog = .{
+        .url = "git+https://github.com/chrischtel/nexlog/#0ece151d89d1d33e4917ccc3efc14b4b5c9befc8",
+        .hash = "nexlog-0.6.1-zfPDxO3OAQCuOsWbLmI8UyJSRWisHD7YWQl8Puj309ku",
+    },
+    .zeit = .{
+            .url = "git+https://github.com/rockorager/zeit/#991f38266f86535e68431675e8feb84efa1f011b",
+            .hash = "zeit-0.6.0-5I6bk0t7AgCPM_cY1DoqJB2pnmG7MMtpdO5IxNpryJDy",
+        },
+}, .paths = .{ "build.zig", "build.zig.zon", "src" } }
