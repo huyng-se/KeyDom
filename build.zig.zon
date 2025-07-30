@@ -15,8 +15,12 @@
         .url = "git+https://github.com/chrischtel/nexlog/#0ece151d89d1d33e4917ccc3efc14b4b5c9befc8",
         .hash = "nexlog-0.6.1-zfPDxO3OAQCuOsWbLmI8UyJSRWisHD7YWQl8Puj309ku",
     },
-    .zeit = .{
-            .url = "git+https://github.com/rockorager/zeit/#991f38266f86535e68431675e8feb84efa1f011b",
-            .hash = "zeit-0.6.0-5I6bk0t7AgCPM_cY1DoqJB2pnmG7MMtpdO5IxNpryJDy",
+    .uuid = .{
+        .url = "https://github.com/r4gus/uuid-zig/archive/refs/tags/0.3.0.tar.gz",
+        .hash = "uuid-0.3.0-oOieIVZ4AAB_apOo9zFV0a85GYAST-trqzRJMeEfYuQu",
+    },
+    .@"zig-time" = .{
+            .url = "git+https://github.com/deatil/zig-time?ref=main#23108f7881ff4c52a3855073c9c7f6614a7cd34c",
+            .hash = "zig_time-1.1.0-FD_-CqGkAQB43kEezhbcMoBGWK-8kXYL38d-CdSIYOp2",
         },
 }, .paths = .{ "build.zig", "build.zig.zon", "src" } }
