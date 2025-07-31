@@ -3,7 +3,7 @@ const pg = @import("pg");
 const nexlog = @import("nexlog");
 
 pub fn new_db_pool(alloc: std.mem.Allocator, logger: *nexlog.Logger) !*pg.Pool {
-    var pool = pg.Pool.init(alloc,.{
+    const pool = pg.Pool.init(alloc,.{
         .size = 4,
         .connect = .{
             .port = 5444,
@@ -16,11 +16,10 @@ pub fn new_db_pool(alloc: std.mem.Allocator, logger: *nexlog.Logger) !*pg.Pool {
             .timeout = 10_000,
         }
     }) catch |err| {
-        logger.err("Failed to db connect: {!}", .{err}, nexlog.here(@src()));
+        logger.err("Failed to db connect: {any}", .{err}, nexlog.here(@src()));
         std.posix.exit(1);
     };
 
-    defer pool.deinit();
     return pool;
 }
 

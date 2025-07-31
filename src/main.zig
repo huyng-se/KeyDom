@@ -1,16 +1,10 @@
 const std = @import("std");
-const tk = @import("tokamak");
+const httpz = @import("httpz");
 const nexlog = @import("nexlog");
 const postgres = @import("driven/postgres.zig");
-const middleware = @import("core/middleware.zig");
-const userController = @import("driving/user_controller.zig");
-
-const routes: []const tk.Route = &.{
-    middleware.logger(&.{
-        .group("/api", &.{ .router(userController) }),
-        .send(error.NotFound),
-    }),
-};
+const App = @import("core/app.zig").App;
+const healthyCtrl = @import("driving/healthy.zig");
+const userCtrl = @import("driving/user_controller.zig");
 
 pub fn main() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
@@ -20,24 +14,25 @@ pub fn main() !void {
     const logger = try nexlog.Logger.init(allocator, .{});
     defer logger.deinit();
 
-    // logger.info("Application starting", .{}, nexlog.here(@src()));
-    // logger.debug("Initializing subsystems", .{}, nexlog.here(@src()));
-    // logger.warn("Resource usage high", .{}, nexlog.here(@src()));
-    // logger.info("Application shutdown complete", .{}, nexlog.here(@src()));
+    var db_pool = try postgres.new_db_pool(allocator, logger);
+    defer db_pool.deinit();
 
-    var db = postgres.new_db_pool(allocator, logger);
-    var inj = tk.Injector.init(&.{ .ref(&db) }, null);
+    var app = App {
+        .db_pool = db_pool,
+        .logger = logger,
+    };
 
-    var server = try tk.Server.init(
+    var server = try httpz.Server(*App).init(
         allocator,
-        routes,
-        .{
-            .injector = &inj,
-            .listen=
-            .{
-                .port = 8080
-            }
-        });
+        .{.port = 8883},
+        &app,
+    );
+    defer server.deinit();
 
-    try server.start();
+    var router = try server.router(.{});
+    router.get("/api/healthy", healthyCtrl.checkHealth, .{});
+    router.get("/api/users", userCtrl.getUsers, .{});
+
+    logger.info("Starting Server on Port: {d}",.{server.config.port.?}, nexlog.here(@src()));
+    try server.listen();
 }

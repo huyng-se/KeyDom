@@ -1,5 +1,4 @@
 const std = @import("std");
-const tokamak = @import("tokamak");
 
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
@@ -12,6 +11,10 @@ pub fn build(b: *std.Build) void {
     });
 
     // Package Module
+    const httpz = b.dependency("httpz", .{
+        .target = target,
+        .optimize = optimize,
+    });
     const pg = b.dependency("pg", .{
         .target = target,
         .optimize = optimize,
@@ -26,8 +29,8 @@ pub fn build(b: *std.Build) void {
         .root_module = exe_mod,
     });
     b.installArtifact(exe);
-    tokamak.setup(exe, .{});
 
+    exe.root_module.addImport("httpz", httpz.module("httpz"));
     exe.root_module.addImport("pg", pg.module("pg"));
     exe.root_module.addImport("zig-jwt", zig_jwt_dep.module("zig-jwt"));
     exe.root_module.addImport("zig-time", zig_time_dep.module("zig-time"));
