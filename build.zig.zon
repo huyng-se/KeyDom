@@ -3,10 +3,6 @@
         .url = "git+https://github.com/karlseguin/pg.zig?ref=master#f5d46c0721db63bc42354f1dcda03d63bdabdac6",
         .hash = "pg-0.0.0-Wp_7gS8DBgAMo_tz7-KNu5OxmKZn1tCeVWNeipSANF64",
     },
-    .tokamak = .{
-        .url = "git+https://github.com/cztomsik/tokamak?ref=main#0e89945904f19d0331cd19bca5072a4e421b0dc9",
-        .hash = "tokamak-2.0.0-FbnSefY2BACZnQ9VL5WDJbds6mKoBZQpZtNvLcCK_TLc",
-    },
     .@"zig-jwt" = .{
         .url = "git+https://github.com/deatil/zig-jwt?ref=main#9447097fef3cc6a647e579bb46f645f5652cdf2e",
         .hash = "zig_jwt-1.2.11-w3q9SNA3BABOmYiyG8uxy12nLAEY5gJMZqQXi8fyPz_L",
@@ -15,8 +11,16 @@
         .url = "git+https://github.com/chrischtel/nexlog/#0ece151d89d1d33e4917ccc3efc14b4b5c9befc8",
         .hash = "nexlog-0.6.1-zfPDxO3OAQCuOsWbLmI8UyJSRWisHD7YWQl8Puj309ku",
     },
-    .zeit = .{
-            .url = "git+https://github.com/rockorager/zeit/#991f38266f86535e68431675e8feb84efa1f011b",
-            .hash = "zeit-0.6.0-5I6bk0t7AgCPM_cY1DoqJB2pnmG7MMtpdO5IxNpryJDy",
-        },
+    .uuid = .{
+        .url = "https://github.com/r4gus/uuid-zig/archive/refs/tags/0.3.0.tar.gz",
+        .hash = "uuid-0.3.0-oOieIVZ4AAB_apOo9zFV0a85GYAST-trqzRJMeEfYuQu",
+    },
+    .@"zig-time" = .{
+        .url = "git+https://github.com/deatil/zig-time?ref=main#23108f7881ff4c52a3855073c9c7f6614a7cd34c",
+        .hash = "zig_time-1.1.0-FD_-CqGkAQB43kEezhbcMoBGWK-8kXYL38d-CdSIYOp2",
+    },
+    .httpz = .{
+        .url = "git+https://github.com/karlseguin/http.zig?ref=master#ef50c6878c3c512786e3311df657eb425b87ba91",
+        .hash = "httpz-0.0.0-PNVzrAvCBgDPm4lE3vCQekPyCKAE2TIsbxly-GeS1_gl",
+    },
 }, .paths = .{ "build.zig", "build.zig.zon", "src" } }
