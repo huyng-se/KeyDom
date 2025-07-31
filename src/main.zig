@@ -7,7 +7,9 @@ const healthyCtrl = @import("driving/healthy.zig");
 const userCtrl = @import("driving/user_controller.zig");
 
 pub fn main() !void {
-    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    var gpa = std.heap.GeneralPurposeAllocator(.{
+        .thread_safe = true,
+    }){};
     const allocator = gpa.allocator();
     defer _ = gpa.deinit();
 
@@ -16,6 +18,9 @@ pub fn main() !void {
 
     var db_pool = try postgres.new_db_pool(allocator, logger);
     defer db_pool.deinit();
+
+    try postgres.drop_db(db_pool);
+    try postgres.init_db(db_pool, logger);
 
     var app = App {
         .db_pool = db_pool,
@@ -27,12 +32,15 @@ pub fn main() !void {
         .{.port = 8883},
         &app,
     );
-    defer server.deinit();
+    defer {
+        server.stop();
+        server.deinit();
+    }
 
     var router = try server.router(.{});
-    router.get("/api/healthy", healthyCtrl.checkHealth, .{});
-    router.get("/api/users", userCtrl.getUsers, .{});
+    router.get("/api/healthy",healthyCtrl.checkHealth,.{});
+    router.get("/api/users",userCtrl.getUsers,.{});
 
-    logger.info("Starting Server on Port: {d}",.{server.config.port.?}, nexlog.here(@src()));
+    logger.info("Starting Server on Port: {d}\n",.{server.config.port.?}, nexlog.here(@src()));
     try server.listen();
 }
