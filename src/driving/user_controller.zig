@@ -1,6 +1,32 @@
+const std = @import("std");
 const httpz = @import("httpz");
+const nexlog = @import("nexlog");
+const user_dto = @import("../domain/user_dto.zig");
 const App = @import("../core/app.zig").App;
 
-pub fn getUsers(_: *App, _: *httpz.Request, res: *httpz.Response) !void {
-    try res.json(.{ .hello = "users" }, .{});
+const UserPayload = user_dto.UserPayload;
+
+pub fn createUser(app: *App, req: *httpz.Request, res: *httpz.Response) !void {
+    if (try req.json(UserPayload)) |payload| {
+        const result = try app.user_service.createUser(payload);
+        try res.json(.{ .result = result }, .{});
+    } else {
+        res.status = 400;
+        res.body = "Invalid Payload!";
+    }
+
+    return;
+}
+
+pub fn getUser(app: *App, req: *httpz.Request, res: *httpz.Response) !void {
+    const userId = req.param("id").?;
+    const user = app.user_service.findUser(userId) catch |err| {
+        res.status = 404;
+        res.body = "User Not Found!";
+        app.logger.err("Get user failed: {any}", .{err}, nexlog.here(@src()));
+        return;
+    };
+
+    try res.json(.{ .result = user }, .{});
+    return;
 }
