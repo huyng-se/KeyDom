@@ -6,6 +6,10 @@ const user_dto = @import("../domain/user_dto.zig");
 const user_domain = @import("../domain/user.zig");
 const user_port = @import("../ports/user_port.zig");
 
+// const Uuid = @import("uuidz").Uuid;
+const time = @import("zig-time");
+const common_password = @import("../common/password.zig");
+
 const UserEntity = user_domain.UserEntity;
 
 pub const UserRepository = struct {
@@ -15,8 +19,14 @@ pub const UserRepository = struct {
 
     pub fn save(ptr: *anyopaque, user: UserEntity) anyerror!UserEntity {
         const self: *UserRepository = @ptrCast(@alignCast(ptr));
-        _ = try self.db_pool.exec("INSERT INTO users (uuid, fullname, email, password, role, status, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
-            .{user.uuid, user.fullname, user.email, user.password, user.role, user.status, user.created_at, user.updated_at});
+        // const uuid_val: Uuid = .{ .v4 = .init(std.crypto.random) };
+        // const new_uuid = uuid_val.toString();
+        // const password_hash = try common_password.hashing(self.alloc, "123123");
+
+        _ = self.db_pool.exec("INSERT INTO users (uuid, fullname, email, password, role, status) VALUES ($1, $2, $3, $4, $5, $6)",
+        .{ 1, "fullname", "email@gmail.com", "asdasdasdsa", "CLIENT", "ACTIVATE" }) catch |err| {
+            self.logger.err("Failed to insert new user: {any}", .{ err }, nexlog.here(@src()));
+        };
 
         return user;
     }
