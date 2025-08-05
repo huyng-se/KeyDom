@@ -3,5 +3,5 @@ zig-out/
 *.o
 .vscode/
 *.obj
-.ide/
+.idea/
 *.exe

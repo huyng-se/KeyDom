@@ -1,0 +1,153 @@
+type: collection.insomnia.rest/5.0
+name: KeyDom
+meta:
+  id: wrk_b1918fbf6f694f8db774aa832e1ce472
+  created: 1754040111857
+  modified: 1754056341848
+  description: ""
+collection:
+  - name: Users
+    meta:
+      id: fld_0f419a23def54c508e2c8d0acbf6f0d1
+      created: 1754056391874
+      modified: 1754402901132
+      sortKey: -1754056391874
+      description: ""
+    children:
+      - url: localhost:8883/api/users
+        name: Create new user
+        meta:
+          id: req_469bc382f00142b08e5af1d9cf8dd186
+          created: 1754056399747
+          modified: 1754403612409
+          isPrivate: false
+          description: ""
+          sortKey: -1754056400047
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"fullname": "fullname2",
+            	"email": "email2@gmail.com",
+            	"password": "123456"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.4.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: localhost:8883/api/users
+        name: Get all users
+        meta:
+          id: req_3fba67f37df9493bbc05d3dbbef43acb
+          created: 1754400606022
+          modified: 1754402888178
+          isPrivate: false
+          description: ""
+          sortKey: -1754056399847
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.4.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: localhost:8883/api/users/85c04c4d-f2fb-4ccf-bc56-1eeb6ad14b9e
+        name: Get user
+        meta:
+          id: req_c1740d0aecfb4d209cbcf49767ba25e8
+          created: 1754402008457
+          modified: 1754405013477
+          isPrivate: false
+          description: ""
+          sortKey: -1754056399947
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.4.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: localhost:8883/api/users/1977f28e-9c11-43d9-9f58-c27ad077b798
+        name: Delete user
+        meta:
+          id: req_89ab9dacbab4476888c9d113a93ec53f
+          created: 1754402895610
+          modified: 1754403634505
+          isPrivate: false
+          description: ""
+          sortKey: -1754056399747
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/11.4.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: localhost:8883/api/users/85c04c4d-f2fb-4ccf-bc56-1eeb6ad14b9e
+        name: Update user
+        meta:
+          id: req_591432c4b1264ec2acda5e858269820b
+          created: 1754404955009
+          modified: 1754405228084
+          isPrivate: false
+          description: ""
+          sortKey: -1754056399797
+        method: PATCH
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"fullname": "fullname2_update",
+            	"email": "email2_up@gmail.com"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.4.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_574a89440eb54413e571ec2d5aab9c96046f314d
+    created: 1754056341992
+    modified: 1754056341992
+environments:
+  name: Base Environment
+  meta:
+    id: env_574a89440eb54413e571ec2d5aab9c96046f314d
+    created: 1754040111859
+    modified: 1754056341846
+    isPrivate: false

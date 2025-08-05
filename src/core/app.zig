@@ -1,10 +1,14 @@
+const std = @import("std");
 const pg = @import("pg");
 const httpz = @import("httpz");
 const nexlog = @import("nexlog");
+const user_ports = @import("../ports/user_port.zig");
 
 pub const App = struct {
+    alloc: std.mem.Allocator,
     db_pool: *pg.Pool,
     logger: *nexlog.Logger,
+    user_service: user_ports.UserServicePort,
 
     pub fn notFound(self: *App, req: *httpz.Request, res: *httpz.Response) !void {
         self.logger.warn("404 {} {s}", .{req.method, req.url.path}, nexlog.here(@src()));

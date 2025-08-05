@@ -1,6 +1,7 @@
 const std = @import("std");
 const pg = @import("pg");
 const nexlog = @import("nexlog");
+const user_domain = @import("../domain/user.zig");
 
 pub fn new_db_pool(alloc: std.mem.Allocator, logger: *nexlog.Logger) !*pg.Pool {
     const pool = pg.Pool.init(alloc,.{
@@ -23,19 +24,23 @@ pub fn new_db_pool(alloc: std.mem.Allocator, logger: *nexlog.Logger) !*pg.Pool {
     return pool;
 }
 
-pub fn init_db(db_pool: *pg.Pool, logger: *nexlog.Logger) !void {
+pub fn migration_tables(db_pool: *pg.Pool, logger: *nexlog.Logger) !void {
+    try create_table(db_pool, user_domain.UserEntity.NEW_TABLE_QUERY, logger);
+}
+
+fn create_table(db_pool: *pg.Pool, raw_query: []const u8, logger: *nexlog.Logger) !void {
     var conn = try db_pool.acquire();
     defer conn.release();
 
-    _ = conn.exec("CREATE TABLE pg_example_users (id integer, name text)", .{})
-        catch |err| {
-            if (conn.err) |pg_err| {
-                logger.err("create failure: {any}", .{pg_err.message}, nexlog.here(@src()));
-            }
+    _ = db_pool.exec(raw_query, .{}) catch |err| {
+        if (conn.err) |pg_err| {
+            logger.err("Create table failure: {any}", .{pg_err.message}, nexlog.here(@src()));
+        }
+
         return err;
     };
 }
 
-pub fn drop_db(db_pool: *pg.Pool) !void {
-    _ = try db_pool.exec("DROP TABLE IF EXISTS pg_example_users", .{});
+fn drop_table(db_pool: *pg.Pool, table_name: []const u8) !void {
+    _ = try db_pool.exec("DROP TABLE IF EXISTS {s}", .{table_name});
 }
