@@ -20,8 +20,19 @@ pub const UserEntity = struct {
     "SELECT * FROM users WHERE uuid = $1";
 
     pub const FIND_ALL_USERS_QUERY =
-    "SELECT uuid, fullname, email, role, status, created_at, updated_at FROM users ORDER BY created_at DESC LIMIT $1 OFFSET $2";
+    "SELECT * FROM users ORDER BY created_at DESC LIMIT $1 OFFSET $2";
+
+    pub const UPDATE_USER_QUERY =
+    "UPDATE users SET fullname = COALESCE($1, fullname), email = COALESCE($2, email), updated_at = $3 WHERE uuid = $4";
 
     pub const DELETE_USER_QUERY =
     "DELETE FROM users WHERE uuid = $1";
+
+    pub fn deinit(self: @This(), alloc: std.mem.Allocator) void {
+        alloc.free(self.uuid);
+        alloc.free(self.fullname);
+        alloc.free(self.email);
+        alloc.free(self.role);
+        alloc.free(self.status);
+    }
 };

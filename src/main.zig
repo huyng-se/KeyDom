@@ -57,6 +57,9 @@ pub fn main() !void {
     router.get("/api/healthy", healthyCtrl.checkHealth, .{});
     router.post("/api/users", userCtrl.createUser, .{});
     router.get("/api/users/:id", userCtrl.getUser, .{});
+    router.get("/api/users", userCtrl.getUsers, .{});
+    router.patch("/api/users/:id", userCtrl.updateUser, .{});
+    router.delete("/api/users/:id", userCtrl.deleteUser, .{});
 
     logger.info("Starting Server on Port: {d}\n", .{server.config.port.?}, nexlog.here(@src()));
     try server.listen();

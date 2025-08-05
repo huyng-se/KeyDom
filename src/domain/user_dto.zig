@@ -8,6 +8,11 @@ pub const NewUserPayload = struct {
     password: []const u8,
 };
 
+pub const UpdateUserPayload = struct {
+    fullname: ?[]const u8,
+    email: ?[]const u8,
+};
+
 pub const UserResponse = struct {
     uuid: []u8,
     fullname: []const u8,
