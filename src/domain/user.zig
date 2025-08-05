@@ -1,10 +1,8 @@
 const std = @import("std");
-const time = @import("zig-time");
-const common_password = @import("../common/password.zig");
 
 pub const UserEntity = struct {
-    uuid: []const u8,
-    fullname: ?[]const u8,
+    uuid: []u8,
+    fullname: []const u8,
     email: []const u8,
     password: []const u8,
     role: []const u8,
@@ -13,36 +11,17 @@ pub const UserEntity = struct {
     updated_at: i64,
 
     pub const NEW_TABLE_QUERY =
-        "CREATE TABLE IF NOT EXISTS users (uuid SERIAL PRIMARY KEY, fullname TEXT, email TEXT UNIQUE NOT NULL, password TEXT NOT NULL, role TEXT NOT NULL, status TEXT NOT NULL)";
+    "CREATE TABLE IF NOT EXISTS users (uuid UUID PRIMARY KEY, fullname TEXT UNIQUE NOT NULL, email TEXT UNIQUE NOT NULL, password TEXT NOT NULL, role TEXT NOT NULL, status TEXT NOT NULL, created_at TIMESTAMP NOT NULL, updated_at TIMESTAMP NOT NULL)";
 
-    pub fn new(
-        alloc: std.mem.Allocator,
-        fullname: []const u8,
-        email: []const u8,
-        password: []const u8,
-        role: []const u8,
-        status: []const u8,
-    ) !UserEntity {
-        // const new_uuid = uuid.newV4();
-        const password_hash = try common_password.hashing(alloc, password);
+    pub const INSERT_USER_QUERY =
+    "INSERT INTO users (uuid, fullname, email, password, role, status, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)";
 
-        return UserEntity{
-            .uuid = "",
-            .fullname = try alloc.dupe(u8, fullname),
-            .email = try alloc.dupe(u8, email),
-            .password = try alloc.dupe(u8, password_hash),
-            .role = try alloc.dupe(u8, role),
-            .status = try alloc.dupe(u8, status),
-            .created_at = time.now().timestamp(),
-            .updated_at = time.now().timestamp(),
-        };
-    }
+    pub const FIND_USER_BY_ID_QUERY =
+    "SELECT * FROM users WHERE uuid = $1";
 
-    // pub fn deinit(self: UserEntity, alloc: std.mem.Allocator) void {
-    //     alloc.free(self.fullname);
-    //     alloc.free(self.email);
-    //     alloc.free(self.password);
-    //     alloc.free(self.role);
-    //     alloc.free(self.status);
-    // }
+    pub const FIND_ALL_USERS_QUERY =
+    "SELECT uuid, fullname, email, role, status, created_at, updated_at FROM users ORDER BY created_at DESC LIMIT $1 OFFSET $2";
+
+    pub const DELETE_USER_QUERY =
+    "DELETE FROM users WHERE uuid = $1";
 };

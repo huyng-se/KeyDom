@@ -1,46 +1,83 @@
 const std = @import("std");
 const pg = @import("pg");
-const nexlog = @import("nexlog");
-const postgres = @import("postgres.zig");
-const user_dto = @import("../domain/user_dto.zig");
-const user_domain = @import("../domain/user.zig");
-const user_port = @import("../ports/user_port.zig");
-
-// const Uuid = @import("uuidz").Uuid;
 const time = @import("zig-time");
-const common_password = @import("../common/password.zig");
-
-const UserEntity = user_domain.UserEntity;
+const nexlog = @import("nexlog");
+const Uuid = @import("uuidz").Uuid;
+const user_dto = @import("../domain/user_dto.zig");
+const user_port = @import("../ports/user_port.zig");
+const helpers = @import("../common/helpers.zig");
+const UserEntity = @import("../domain/user.zig").UserEntity;
 
 pub const UserRepository = struct {
     db_pool: *pg.Pool,
     logger: *nexlog.Logger,
     alloc: std.mem.Allocator,
 
-    pub fn save(ptr: *anyopaque, user: UserEntity) anyerror!UserEntity {
+    pub fn save(ptr: *anyopaque, payload: user_dto.NewUserPayload) anyerror!?i64 {
         const self: *UserRepository = @ptrCast(@alignCast(ptr));
-        // const uuid_val: Uuid = .{ .v4 = .init(std.crypto.random) };
-        // const new_uuid = uuid_val.toString();
-        // const password_hash = try common_password.hashing(self.alloc, "123123");
 
-        _ = self.db_pool.exec("INSERT INTO users (uuid, fullname, email, password, role, status) VALUES ($1, $2, $3, $4, $5, $6)",
-        .{ 1, "fullname", "email@gmail.com", "asdasdasdsa", "CLIENT", "ACTIVATE" }) catch |err| {
-            self.logger.err("Failed to insert new user: {any}", .{ err }, nexlog.here(@src()));
-        };
+        const uuid_val: Uuid = .{ .v4 = .init(std.crypto.random) };
+        const new_uuid = uuid_val.toString();
 
-        return user;
+        const password_hash = try helpers.hashing(
+            self.alloc, payload.password);
+
+        const re = try self.db_pool.exec(UserEntity.INSERT_USER_QUERY,
+            .{
+            new_uuid,
+            payload.fullname.?,
+            payload.email,
+            password_hash,
+            "CLIENT",
+            "ACTIVATE",
+            time.now().timestamp(),
+            time.now().timestamp(),
+        });
+
+        defer self.alloc.free(password_hash);
+        return re.?;
     }
 
     pub fn findById(ptr: *anyopaque, uid: []const u8) anyerror!?UserEntity {
         const self: *UserRepository = @ptrCast(@alignCast(ptr));
-        const result = try self.db_pool.row("SELECT uuid, fullname, email, role, status, created_at, updated_at FROM users WHERE uuid = $1", .{uid});
+        return error.NOT_IMPLEMENT;
+        // var arena = std.heap.ArenaAllocator.init(self.alloc);
+        // defer arena.deinit();
+        //
+        // const result = try self.db_pool.rowOpts(
+        //     UserEntity.FIND_USER_BY_ID_QUERY,.{uid}, .{});
+        //
+        // if (result) |row| {
+        //     return try row.to(UserEntity, .{.allocator = arena.allocator()});
+        // } else {
+        //     return null;
+        // }
+    }
 
-        if (result) |row| {
-            const user = try row.to(UserEntity, .{});
-            return user;
-        } else {
-            return error.UserNotFound;
-        }
+    pub fn findAll(ptr: *anyopaque) anyerror![]UserEntity {
+        const self: *UserRepository = @ptrCast(@alignCast(ptr));
+        return error.NOT_IMPLEMENT;
+        // var arena = std.heap.ArenaAllocator.init(self.alloc);
+        // defer arena.deinit();
+        //
+        // var results = try self.db_pool.queryOpts(UserEntity.FIND_ALL_USERS_QUERY,
+        //     .{20, 0}, .{.allocator = arena.allocator()});
+        // defer results.deinit();
+        //
+        // var users = std.ArrayList(UserEntity).init(self.alloc);
+        // while (try results.next()) |row| {
+        //     const user = try row.to(UserEntity, .{.allocator = arena.allocator()});
+        //     try users.append(user);
+        // }
+        //
+        // const usersSlice = try users.toOwnedSlice();
+        // defer self.alloc.free(usersSlice);
+        // return usersSlice;
+    }
+
+    pub fn deleteById(_: *anyopaque, _: []const u8) anyerror!void {
+        // const self: *UserRepository = @ptrCast(@alignCast(ptr));
+        return error.NOT_IMPLEMENT;
     }
 
     pub fn mapToPort(self: *UserRepository) user_port.UserRepositoryPort {
@@ -48,6 +85,8 @@ pub const UserRepository = struct {
             .ptr = self,
             .saveFn = UserRepository.save,
             .findByIdFn = UserRepository.findById,
+            .findAllFn = UserRepository.findAll,
+            .deleteByIdFn = UserRepository.deleteById,
         };
     }
 };

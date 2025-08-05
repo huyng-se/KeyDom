@@ -1,9 +1,11 @@
+const std = @import("std");
 const pg = @import("pg");
 const httpz = @import("httpz");
 const nexlog = @import("nexlog");
 const user_ports = @import("../ports/user_port.zig");
 
 pub const App = struct {
+    alloc: std.mem.Allocator,
     db_pool: *pg.Pool,
     logger: *nexlog.Logger,
     user_service: user_ports.UserServicePort,

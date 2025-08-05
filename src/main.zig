@@ -32,10 +32,12 @@ pub fn main() !void {
 
     var user_service = UserService{
         .alloc = allocator,
+        .logger = logger,
         .repo = user_repo.mapToPort(),
     };
 
     var app = App{
+        .alloc = allocator,
         .db_pool = db_pool,
         .logger = logger,
         .user_service = user_service.mapToPort(),
