@@ -16,14 +16,12 @@ pub fn createUser(app: *App, req: *httpz.Request, res: *httpz.Response) !void {
             return;
         };
 
+        res.status = 201;
         try res.json(.{ .result = result }, .{});
     } else {
         res.status = 400;
         res.body = "Invalid Payload!";
     }
-
-    res.status = 201;
-    return;
 }
 
 pub fn getUser(app: *App, req: *httpz.Request, res: *httpz.Response) !void {
@@ -43,7 +41,6 @@ pub fn getUser(app: *App, req: *httpz.Request, res: *httpz.Response) !void {
 
     res.status = 200;
     try res.json(.{ .result = user }, .{});
-    return;
 }
 
 pub fn getUsers(app: *App, _: *httpz.Request, res: *httpz.Response) !void {
@@ -53,6 +50,7 @@ pub fn getUsers(app: *App, _: *httpz.Request, res: *httpz.Response) !void {
         app.logger.err("Get users failed: {any}", .{err}, nexlog.here(@src()));
         return;
     };
+
     defer {
         for (users) |*user| {
             user.deinit(app.alloc) catch {};
@@ -63,7 +61,6 @@ pub fn getUsers(app: *App, _: *httpz.Request, res: *httpz.Response) !void {
 
     res.status = 200;
     try res.json(.{ .result = users }, .{});
-    return;
 }
 
 pub fn updateUser(app: *App, req: *httpz.Request, res: *httpz.Response) !void {
@@ -82,8 +79,7 @@ pub fn updateUser(app: *App, req: *httpz.Request, res: *httpz.Response) !void {
         res.body = "Invalid Payload!";
     }
 
-    res.status = 201;
-    return;
+    res.status = 200;
 }
 
 pub fn deleteUser(app: *App, req: *httpz.Request, res: *httpz.Response) !void {
@@ -95,6 +91,5 @@ pub fn deleteUser(app: *App, req: *httpz.Request, res: *httpz.Response) !void {
         return;
     };
 
-    res.status = 201;
-    return;
+    res.status = 204;
 }
