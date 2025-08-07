@@ -79,17 +79,25 @@ pub const UserService = struct {
             return error.INTERNAL_SERVER_ERROR;
         };
 
-        return result;
+        if (result) |it| {
+            return it;
+        } else {
+            return error.USER_NOT_FOUND;
+        }
     }
 
-    pub fn deleteUser(ptr: *anyopaque, uid: []const u8) anyerror!void {
+    pub fn deleteUser(ptr: *anyopaque, uid: []const u8) anyerror!?i64 {
         var self: *UserService = @ptrCast(@alignCast(ptr));
-        _ = self.repo.deleteById(uid) catch |err| {
+        const result = self.repo.deleteById(uid) catch |err| {
             self.logger.err("Failed to delete user: {any}", .{ err }, nexlog.here(@src()));
             return error.INTERNAL_SERVER_ERROR;
         };
 
-        return;
+        if (result) |it| {
+            return it;
+        } else {
+            return error.USER_NOT_FOUND;
+        }
     }
 
     pub fn mapToPort(self: *UserService) user_ports.UserServicePort {

@@ -13,7 +13,7 @@ pub const UserServicePort = struct {
     findUserFn: *const fn (*anyopaque, []const u8) anyerror!UserResponse,
     listUsersFn: *const fn (*anyopaque) anyerror![]UserResponse,
     updateUserFn: *const fn (*anyopaque, []const u8, UpdateUserPayload) anyerror!?i64,
-    deleteUserFn: *const fn (*anyopaque, []const u8) anyerror!void,
+    deleteUserFn: *const fn (*anyopaque, []const u8) anyerror!?i64,
 
     pub fn createUser(self: UserServicePort, payload: NewUserPayload) anyerror!?i64 {
         return self.createUserFn(self.ptr, payload);
@@ -31,7 +31,7 @@ pub const UserServicePort = struct {
         return self.updateUserFn(self.ptr, uid, payload);
     }
 
-    pub fn deleteUser(self: UserServicePort, uid: []const u8) anyerror!void {
+    pub fn deleteUser(self: UserServicePort, uid: []const u8) anyerror!?i64 {
         return self.deleteUserFn(self.ptr, uid);
     }
 };
@@ -42,7 +42,7 @@ pub const UserRepositoryPort = struct {
     findByIdFn: *const fn (*anyopaque, []const u8) anyerror!?UserEntity,
     findAllFn: *const fn (*anyopaque) anyerror![]UserEntity,
     updateFn: *const fn (*anyopaque, []const u8, UpdateUserPayload) anyerror!?i64,
-    deleteByIdFn: *const fn (*anyopaque, []const u8) anyerror!void,
+    deleteByIdFn: *const fn (*anyopaque, []const u8) anyerror!?i64,
 
     pub fn save(self: UserRepositoryPort, payload: NewUserPayload) anyerror!?i64 {
         return self.saveFn(self.ptr, payload);
@@ -60,7 +60,7 @@ pub const UserRepositoryPort = struct {
         return self.updateFn(self.ptr, uid, payload);
     }
 
-    pub fn deleteById(self: UserRepositoryPort, uid: []const u8) anyerror!void {
+    pub fn deleteById(self: UserRepositoryPort, uid: []const u8) anyerror!?i64 {
         return self.deleteByIdFn(self.ptr, uid);
     }
 };

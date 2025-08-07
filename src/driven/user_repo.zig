@@ -69,6 +69,7 @@ pub const UserRepository = struct {
 
     pub fn update(ptr: *anyopaque, uid: []const u8, payload: user_dto.UpdateUserPayload) anyerror!?i64 {
         const self: *UserRepository = @ptrCast(@alignCast(ptr));
+
         return try self.db_pool.exec(
             UserEntity.UPDATE_USER_QUERY,
             .{
@@ -80,11 +81,10 @@ pub const UserRepository = struct {
     }
 
 
-    pub fn deleteById(ptr: *anyopaque, uid: []const u8) anyerror!void {
+    pub fn deleteById(ptr: *anyopaque, uid: []const u8) anyerror!?i64 {
         const self: *UserRepository = @ptrCast(@alignCast(ptr));
-        _ = try self.db_pool.exec(UserEntity.DELETE_USER_QUERY, .{uid});
 
-        return;
+        return try self.db_pool.exec(UserEntity.DELETE_USER_QUERY, .{uid});
     }
 
     pub fn mapToPort(self: *UserRepository) user_port.UserRepositoryPort {
