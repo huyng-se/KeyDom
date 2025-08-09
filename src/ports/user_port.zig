@@ -1,6 +1,7 @@
 const std = @import("std");
 const user_dto = @import("../domain/user_dto.zig");
 const user_domain = @import("../domain/user.zig");
+const AppError = @import("../core/app_error.zig").AppError;
 
 const UserEntity = user_domain.UserEntity;
 const NewUserPayload = user_dto.NewUserPayload;
@@ -9,29 +10,29 @@ const UserResponse = user_dto.UserResponse;
 
 pub const UserServicePort = struct {
     ptr: *anyopaque,
-    createUserFn: *const fn (*anyopaque, NewUserPayload) anyerror!?i64,
-    findUserFn: *const fn (*anyopaque, []const u8) anyerror!UserResponse,
-    listUsersFn: *const fn (*anyopaque) anyerror![]UserResponse,
-    updateUserFn: *const fn (*anyopaque, []const u8, UpdateUserPayload) anyerror!?i64,
-    deleteUserFn: *const fn (*anyopaque, []const u8) anyerror!?i64,
+    createUserFn: *const fn (*anyopaque, NewUserPayload) AppError!?i64,
+    findUserFn: *const fn (*anyopaque, []const u8) AppError!UserResponse,
+    listUsersFn: *const fn (*anyopaque) AppError![]UserResponse,
+    updateUserFn: *const fn (*anyopaque, []const u8, UpdateUserPayload) AppError!?i64,
+    deleteUserFn: *const fn (*anyopaque, []const u8) AppError!?i64,
 
-    pub fn createUser(self: UserServicePort, payload: NewUserPayload) anyerror!?i64 {
+    pub fn createUser(self: UserServicePort, payload: NewUserPayload) AppError!?i64 {
         return self.createUserFn(self.ptr, payload);
     }
 
-    pub fn findUser(self: UserServicePort, uid: []const u8) anyerror!UserResponse {
+    pub fn findUser(self: UserServicePort, uid: []const u8) AppError!UserResponse {
         return self.findUserFn(self.ptr, uid);
     }
 
-    pub fn listUsers(self: UserServicePort) anyerror![]UserResponse {
+    pub fn listUsers(self: UserServicePort) AppError![]UserResponse {
         return self.listUsersFn(self.ptr);
     }
 
-    pub fn updateUser(self: UserServicePort, uid: []const u8, payload: UpdateUserPayload) anyerror!?i64 {
+    pub fn updateUser(self: UserServicePort, uid: []const u8, payload: UpdateUserPayload) AppError!?i64 {
         return self.updateUserFn(self.ptr, uid, payload);
     }
 
-    pub fn deleteUser(self: UserServicePort, uid: []const u8) anyerror!?i64 {
+    pub fn deleteUser(self: UserServicePort, uid: []const u8) AppError!?i64 {
         return self.deleteUserFn(self.ptr, uid);
     }
 };
